@@ -6,7 +6,7 @@
 
     <groupId>com.djpa.generichelper</groupId>
     <artifactId>djpa-generic-helper</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <packaging>jar</packaging>
 
     <name>djpa-generic-helper</name>
