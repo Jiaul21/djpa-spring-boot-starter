@@ -26,3 +26,12 @@ jobs:
         run: mvn clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+#               ----- release way -----
+#  git add .
+#  git commit -m "release 1.0.0"
+#  git tag v1.0.0
+#  git push origin main
+#  git push origin v1.0.0

@@ -12,6 +12,6 @@ public interface BaseRepository<E, ID> extends JpaRepository<E, ID> {
 
     <T> Optional<T> findById(ID id, Class<T> type);
 
-    <T> List<T> findByIdIn(Collection<Long> ids, Class<T> tClass);
+    <T> List<T> findByIdIn(Collection<ID> ids, Class<T> tClass);
 }
 

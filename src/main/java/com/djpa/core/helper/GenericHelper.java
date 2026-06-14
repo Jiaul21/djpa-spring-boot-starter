@@ -13,7 +13,7 @@ public interface GenericHelper<E, ID> extends GenericUpdate<E, ID> {
 
     boolean existsByIdOrThrow(ID id);
 
-    <T> List<T> findByIdIn(Collection<Long> ids, Class<T> type);
+    <T> List<T> findByIdIn(Collection<ID> ids, Class<T> type);
 
     E save(E entity);
 

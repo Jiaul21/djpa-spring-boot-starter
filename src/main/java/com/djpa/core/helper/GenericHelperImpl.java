@@ -22,12 +22,13 @@ public class GenericHelperImpl<E, ID> extends GenericUpdateImpl<E, ID> implement
 
     @Override
     public <T> T findByIdOrThrow(ID id, Class<T> type) {
+        baseRepository.deleteAllByIdInBatch(List.of(id));
         return baseRepository.findById(id, type)
                 .orElseThrow(() -> new NotFoundException(entityClass.getSimpleName() + " not found for id=" + id));
     }
 
     @Override
-    public <T> List<T> findByIdIn(Collection<Long> ids, Class<T> type) {
+    public <T> List<T> findByIdIn(Collection<ID> ids, Class<T> type) {
         return baseRepository.findByIdIn(ids, type);
     }
 

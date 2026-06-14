@@ -22,13 +22,21 @@ Install it into your local Maven repository:
 
 ## Maven Usage
 
+Add the repository in pom file:
+
+```xml
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
 Add the library as a normal dependency:
 
 ```xml
 <dependency>
-    <groupId>com.djpa.generichelper</groupId>
+    <groupId>com.github.Jiaul21</groupId>
     <artifactId>djpa-generic-helper</artifactId>
-    <version>1.0.0</version>
+    <version>v1.0.0</version>        <!-- ddsdn-->
 </dependency>
 ```
 
@@ -37,9 +45,9 @@ Use the same artifact as the annotation processor:
 ```xml
 <annotationProcessorPaths>
     <path>
-        <groupId>com.djpa.generichelper</groupId>
+        <groupId>com.github.Jiaul21</groupId>
         <artifactId>djpa-generic-helper</artifactId>
-        <version>1.0.0</version>
+        <version>v1.0.0</version>
     </path>
 </annotationProcessorPaths>
 ```

@@ -41,7 +41,7 @@ public class GenericUpdateImpl<E, ID> implements GenericUpdate<E, ID> {
 
     @Override
     @Transactional
-    public int updateField(ID id, String fieldName, Object value) {
+    public int updateFieldByID(ID id, String fieldName, Object value) {
         String ql = "UPDATE " + entityClass.getSimpleName() + " e SET e." + fieldName + " = :value WHERE e.id = :id";
         int updated = entityManager.createQuery(ql)
                 .setParameter("value", value)
@@ -52,8 +52,9 @@ public class GenericUpdateImpl<E, ID> implements GenericUpdate<E, ID> {
         return updated;
     }
 
+    @Override
     @Transactional
-    public int updateFields(Collection<ID> ids, Map<String, Object> fields) {
+    public int updateFieldsByIDIn(Collection<ID> ids, Map<String, Object> fields) {
         if (ids==null || ids.isEmpty() || fields == null || fields.isEmpty())
             throw new IllegalArgumentException("Update query failed because of ids or fields is null or empty. ids="+ids+", fields="+fields);
 
@@ -89,41 +90,43 @@ public class GenericUpdateImpl<E, ID> implements GenericUpdate<E, ID> {
     }
 
 
+//    @Override
+//    @Transactional
+//    public int updateFieldForBulk(String fieldName, Object value, Collection<ID> ids) {
+//        if (ids == null) return 0;
+//        ids = ids.stream().filter(Objects::nonNull).toList();
+//        if (ids.isEmpty()) return 0;
+//
+//        String ql = "UPDATE " + entityClass.getSimpleName() + " e SET e." + fieldName + " = :value WHERE e.id IN :ids";
+//        int updated = entityManager.createQuery(ql)
+//                .setParameter("value", value)
+//                .setParameter("ids", ids)
+//                .executeUpdate();
+//
+//        entityManager.clear();
+//        return updated;
+//    }
+
+//    @Override
+//    @Transactional
+//    public int updateFieldForBulk(String fieldName, List<? extends IdFieldValue> fields) {
+//        if (fields == null || fields.isEmpty()) return 0;
+//        int updated = 0;
+//        String jpql = "UPDATE " + entityClass.getSimpleName() + " e SET e." + fieldName + " = :value WHERE e.id = :id";
+//        Query query = entityManager.createQuery(jpql);
+//
+//        for (IdFieldValue idFieldValue : fields) {
+//            updated += query
+//                    .setParameter("value", idFieldValue.getValue())
+//                    .setParameter("id", idFieldValue.getId())
+//                    .executeUpdate();
+//        }
+//        entityManager.clear();
+//        return updated;
+//    }
+
+
     @Override
-    @Transactional
-    public int updateFieldForBulk(String fieldName, Object value, Collection<ID> ids) {
-        if (ids == null) return 0;
-        ids = ids.stream().filter(Objects::nonNull).toList();
-        if (ids.isEmpty()) return 0;
-
-        String ql = "UPDATE " + entityClass.getSimpleName() + " e SET e." + fieldName + " = :value WHERE e.id IN :ids";
-        int updated = entityManager.createQuery(ql)
-                .setParameter("value", value)
-                .setParameter("ids", ids)
-                .executeUpdate();
-
-        entityManager.clear();
-        return updated;
-    }
-
-    @Override
-    @Transactional
-    public int updateFieldForBulk(String fieldName, List<? extends IdFieldValue> fields) {
-        if (fields == null || fields.isEmpty()) return 0;
-        int updated = 0;
-        String jpql = "UPDATE " + entityClass.getSimpleName() + " e SET e." + fieldName + " = :value WHERE e.id = :id";
-        Query query = entityManager.createQuery(jpql);
-
-        for (IdFieldValue idFieldValue : fields) {
-            updated += query
-                    .setParameter("value", idFieldValue.getValue())
-                    .setParameter("id", idFieldValue.getId())
-                    .executeUpdate();
-        }
-        entityManager.clear();
-        return updated;
-    }
-
     @Transactional
     public int bulkUpdate(String fieldName, List<? extends IdFieldValue> fields) {
         if(fields == null || fields.isEmpty()) return 0;
@@ -143,44 +146,44 @@ public class GenericUpdateImpl<E, ID> implements GenericUpdate<E, ID> {
     }
 
 
-    @Override
-    @Transactional
-    public int updateBulkEntity(List<ID> ids, List<? extends IdFieldValue> idFieldValues) {
-        if (idFieldValues == null || idFieldValues.isEmpty()) return 0;
+//    @Override
+//    @Transactional
+//    public int updateBulkEntity(List<ID> ids, List<? extends IdFieldValue> idFieldValues) {
+//        if (idFieldValues == null || idFieldValues.isEmpty()) return 0;
+//
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        CriteriaUpdate<E> update = cb.createCriteriaUpdate(entityClass);
+//        Root<E> root = update.from(entityClass);
+//
+//        for (IdFieldValue field : idFieldValues) update.set(root.get(field.getField()), field.getValue());
+//        update.where(root.get("id").in(ids));
+//
+//        int updated = entityManager.createQuery(update).executeUpdate();
+//        entityManager.clear();
+//        return updated;
+//    }
 
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<E> update = cb.createCriteriaUpdate(entityClass);
-        Root<E> root = update.from(entityClass);
-
-        for (IdFieldValue field : idFieldValues) update.set(root.get(field.getField()), field.getValue());
-        update.where(root.get("id").in(ids));
-
-        int updated = entityManager.createQuery(update).executeUpdate();
-        entityManager.clear();
-        return updated;
-    }
-
-    @Override
-    @Transactional
-    public int updateFields(ID id, Map<String, Object> fields) {
-        if (fields == null || fields.isEmpty()) return 0;
-        StringBuilder jpql = new StringBuilder("UPDATE " + entityClass.getSimpleName() + " e SET ");
-
-        int i = 0;
-        for (String field : fields.keySet()) {
-            if (i++ > 0) jpql.append(", ");
-            jpql.append("e.").append(field).append(" = :").append(field);
-        }
-        jpql.append(" WHERE e.id = :id");
-
-        Query query = entityManager.createQuery(jpql.toString());
-        query.setParameter("id", id);
-        fields.forEach(query::setParameter);
-
-        int updated = query.executeUpdate();
-        entityManager.clear();
-        return updated;
-    }
+//    @Override
+//    @Transactional
+//    public int updateFields(ID id, Map<String, Object> fields) {
+//        if (fields == null || fields.isEmpty()) return 0;
+//        StringBuilder jpql = new StringBuilder("UPDATE " + entityClass.getSimpleName() + " e SET ");
+//
+//        int i = 0;
+//        for (String field : fields.keySet()) {
+//            if (i++ > 0) jpql.append(", ");
+//            jpql.append("e.").append(field).append(" = :").append(field);
+//        }
+//        jpql.append(" WHERE e.id = :id");
+//
+//        Query query = entityManager.createQuery(jpql.toString());
+//        query.setParameter("id", id);
+//        fields.forEach(query::setParameter);
+//
+//        int updated = query.executeUpdate();
+//        entityManager.clear();
+//        return updated;
+//    }
 
     @Override
     public Object convertValue(String fieldName, Object value) {
